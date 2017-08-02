@@ -1,0 +1,191 @@
+h1 {
+    text-align: center;
+    font-size: 50pt;
+    color: cadetblue;
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 8px;
+}
+
+h2 {
+    text-align: center;
+    font-size: 30pt;
+    color: black;
+}
+
+h3 {
+    text-align: center;
+    font-size: 20pt;
+    color: black;
+}
+
+line {
+    line-height: 10px
+}
+
+#firstBack {
+    padding-top: 40px;
+    padding-bottom: 200px;
+    background-image: url(IMAG1170.jpg);
+}
+
+list {
+    direction: rtl;
+    font-size: 14pt;
+    font-family: 'Roboto', sans-serif;
+    word-spacing: 8px;
+}
+
+h4 {
+    font-family: 'impact';
+    font-size: 20pt;
+    color: black;
+    line-height: 40px;
+}
+
+h5 {
+    font-size: 10pt;
+    color: black;
+    font-family: 'Roboto', sans-serif;
+}
+
+#goButton {
+    width: 100px;
+    height: 50px;
+    font-size: 35px;
+    position: relative;
+    left: 620px;
+    top: 100px;
+    border: 3px azure double;
+    background-color: lightblue;
+    font-family: monospace;
+}
+
+.tag1 {
+    display: inline-block;
+}
+
+.tag2 {
+    display: inline-block;
+}
+
+.tag3 {
+    display: inline-block;
+}
+
+#menu {}
+
+#menuBtn {
+    width: 200px;
+    height: 50px;
+    font-size: 25px;
+    color: cadetblue;
+    font-family: 'Roboto', sans-serif;
+    position: relative;
+    left: 620px;
+    top: 0px;
+    border: 0px white;
+    background-color: white;
+}
+
+.intro1 {
+    position: relative;
+    padding-top: 40px;
+    padding-left: 40px;
+    float: left;
+}
+
+.intro2 {
+    position: relative;
+    padding-top: 40px;
+    float: left;
+}
+
+i1 {
+    position: relative;
+    left: 200px;
+    font-size: 40pt;
+    color: cadetblue;
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 4px;
+}
+
+i2 {
+    text-align: center;
+    font-size: 30pt;
+    color: black;
+}
+
+i3 {
+    text-align: center;
+    font-size: 30pt;
+    color: black;
+}
+
+i4 {
+    text-align: center;
+    font-size: 30pt;
+    color: black;
+}
+
+i5 {
+    text-align: center;
+    font-size: 30pt;
+    color: black;
+}
+
+.intro3 {
+    padding-top: 30px;
+}
+
+i6 {
+    position: relative;
+    left: 60px;
+    font-size: 40pt;
+    color: cadetblue;
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 4px;
+}
+
+.intro4 {
+    position: relative;
+    padding-top: 50px;
+    padding-right: 60px;
+    float: right;
+}
+
+.intro5 {
+    position: relative;
+    padding-top: 50px;
+    float: right;
+}
+
+i7 {
+    font-size: 30pt;
+}
+
+e1 {
+    position: relative;
+    top: 20px;
+    font-size: 50pt;
+    color: cadetblue;
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 8px;
+}
+
+c1 {
+    position: relative;
+    top: 20px;
+    font-size: 50pt;
+    color: cadetblue;
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 8px;
+}
+
+g1 {
+    position: relative;
+    top: 20px;
+    font-size: 50pt;
+    color: cadetblue;
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 8px;
+}
