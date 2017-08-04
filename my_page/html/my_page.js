@@ -38,6 +38,8 @@ window.onload = function() {
     var game = new Core(1000, 500);
     game.fps = 24;
     game.score = 0;
+    var bullet = 5;
+    setInterval(function(){bullet++;bulletLabel.text = "Bullet : " + bullet;}, 1200);
     //score board
     scoreLabel = new Label("Score : " + game.score);
     scoreLabel.x = 5;
@@ -45,6 +47,13 @@ window.onload = function() {
     scoreLabel.color = "white";
     game.rootScene.addChild(scoreLabel);
     //score board
+    //bullet board
+    bulletLabel = new Label("Bullet : " + bullet);
+    bulletLabel.x = 5;
+    bulletLabel.y = 30;
+    bulletLabel.color = "white";
+    game.rootScene.addChild(bulletLabel);
+    //bullet board
     game.preload("enchant.js-builds-0.8.3-b/images/chara1.png");
     game.preload("enchant.js-builds-0.8.3-b/images/icon0.png");
     game.preload("enchant.js-builds-0.8.3-b/images/chara2.png");
@@ -67,7 +76,7 @@ window.onload = function() {
                 this.addEventListener(enchant.Event.ENTER_FRAME, function() {
                     if (game.input.right) {
                         if (left == true) {
-                            this.rotate(180);
+                            this.tl.scaleTo(1, 1, 1);
                             left = false;
                         }
                         right = true;
@@ -76,7 +85,7 @@ window.onload = function() {
                     }
                     if (game.input.left) {
                         if (right == true) {
-                            this.rotate(180);
+                            this.tl.scaleTo(-1, 1, 1);
                             right = false;
                         }
                         left = true;
@@ -109,11 +118,23 @@ window.onload = function() {
             initialize: function() {
                 enchant.Sprite.call(this, 16, 16);
                 this.image = game.assets['enchant.js-builds-0.8.3-b/images/icon0.png']; // set image
-                this.moveTo(bear.x + 8, bear.y + 8); // move to the position
-                this.tl.moveBy(1000, 0, 30); // set movement
-                this.tl.moveBy(1000, 0, 30); // set movement
+                this.moveTo(bear.x + 30, bear.y + 8); // move to the position
                 this.frame = 15; // set image data
                 game.rootScene.addChild(this); // add to canvas
+                if (true) {
+                    if (bear.x < 500)
+                        this.tl.moveBy(1100, 0, 50);
+                    else
+                    {
+                        this.tl.moveBy(50, 0, 10);
+                        this.tl.moveBy(-1200, 0, 10);
+                    }
+                }
+                this.addEventListener('enterframe', function() {
+                    if (this.x > 1000 || this.x < 1){
+                        game.rootScene.removeChild(this);
+                }
+                })
             }
         });
         //enemy
@@ -122,17 +143,34 @@ window.onload = function() {
                 enchant.Sprite.call(this, 32, 32);
                 this.image = game.assets["enchant.js-builds-0.8.3-b/images/chara2.png"];
                 this.frame = 5;
-                this.y = 400 - rand(100);
-                this.x = 900;
+                this.y = 400 - rand(120);
+                this.x = 1000;
                 this.speed = 10 - rand(9);
                 this.addEventListener('enterframe', function() {
                     this.x -= this.speed;
                     if (this.x < 0) {
-                        this.remove();
-                        /*
-                        alert('game over! score: ' + score);
-                        game.stop();
-                        */
+                        game.rootScene.removeChild(this);
+                        game.end();
+                    }
+                })
+                game.rootScene.addChild(this); // canvas
+            }
+        });
+
+        var Enemy2 = enchant.Class.create(enchant.Sprite, {
+            initialize: function() {
+                enchant.Sprite.call(this, 32, 32);
+                this.image = game.assets["enchant.js-builds-0.8.3-b/images/chara2.png"];
+                this.frame = 5;
+                this.y = rand(100);
+                this.x = 1000;
+                this.speed = 5;
+                this.addEventListener('enterframe', function() {
+                    this.x -= this.speed;
+                    this.tl.moveBy(0, 300, 50).moveBy(0, -300, 50); 
+                    if (this.x < 0) {
+                        game.rootScene.removeChild(this);
+                        game.end();
                     }
                 })
                 game.rootScene.addChild(this); // canvas
@@ -140,12 +178,19 @@ window.onload = function() {
         });
 
         var bear = new Bear();
-        game.rootScene.tl.then(function() {
+        game.rootScene.tl.then(function(){
             var enemy = new Enemy();
+        }).delay(30).loop();
+        game.rootScene.tl.then(function(){
+            var enemy2 = new Enemy2();
         }).delay(30).loop();
 
         game.rootScene.on('touchstart', function(evt) {
-            var apple = new Apple();
+            if (bullet > 0) {
+                bullet -= 1;
+                var apple = new Apple();
+                bulletLabel.text = "Bullet : " + bullet;
+            }
         });
 
         game.rootScene.on('enterframe', function() {
@@ -154,6 +199,20 @@ window.onload = function() {
                 game.rootScene.removeChild(hits[i][0]);
                 game.rootScene.removeChild(hits[i][1]);
                 game.score++;
+                scoreLabel.text = "Score : " + game.score;
+            }
+            var hits2 = Bear.intersect(Enemy);
+            for (var i = 0, len = hits2.length; i < len; i++) {
+                game.rootScene.removeChild(hits2[i][0]);
+                game.rootScene.removeChild(hits2[i][1]);
+                game.end();
+            }
+            var hits3 = Apple.intersect(Enemy2);
+            for (var i = 0, len = hits3.length; i < len; i++) {
+                game.rootScene.removeChild(hits3[i][0]);
+                game.rootScene.removeChild(hits3[i][1]);
+                game.score++;
+                scoreLabel.text = "Score : " + game.score;
             }
         });
     };
