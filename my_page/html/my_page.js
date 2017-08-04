@@ -38,8 +38,13 @@ window.onload = function() {
     var game = new Core(1000, 500);
     game.fps = 24;
     game.score = 0;
+    game.keybind(65, 'left');
+    game.keybind(68, 'right');
+    game.keybind(87, 'up');
+    game.keybind(32, 'down');
     var bullet = 5;
-    setInterval(function(){bullet++;bulletLabel.text = "Bullet : " + bullet;}, 1200);
+    setInterval(function() { bullet++;
+        bulletLabel.text = "Bullet : " + bullet; }, 1800);
     //score board
     scoreLabel = new Label("Score : " + game.score);
     scoreLabel.x = 5;
@@ -57,20 +62,23 @@ window.onload = function() {
     game.preload("enchant.js-builds-0.8.3-b/images/chara1.png");
     game.preload("enchant.js-builds-0.8.3-b/images/icon0.png");
     game.preload("enchant.js-builds-0.8.3-b/images/chara2.png");
+    game.preload("hanwei.jpg")
+    game.preload("question.jpg")
+    game.preload("enchant.js-builds-0.8.3-b/images/icon1.png")
     game.onload = function() {
         game.rootScene.backgroundColor = 'black';
         //bear
+        var right = true;
+        var left = false;
+        var weaponBool = false;
         var Bear = enchant.Class.create(enchant.Sprite, {
             initialize: function() {
-                enchant.Sprite.call(this, 32, 32);
-                this.image = game.assets["enchant.js-builds-0.8.3-b/images/chara1.png"];
+                enchant.Sprite.call(this, 50, 100);
+                this.image = game.assets["hanwei.jpg"];
                 this.x = 0;
                 this.y = 400;
-                this.frame = 5;
                 game.rootScene.addChild(this);
 
-                var right = true;
-                var left = false;
                 var jump = false;
                 var jump2 = false;
                 this.addEventListener(enchant.Event.ENTER_FRAME, function() {
@@ -116,24 +124,18 @@ window.onload = function() {
         //punch
         var Apple = enchant.Class.create(enchant.Sprite, {
             initialize: function() {
-                enchant.Sprite.call(this, 16, 16);
-                this.image = game.assets['enchant.js-builds-0.8.3-b/images/icon0.png']; // set image
-                this.moveTo(bear.x + 30, bear.y + 8); // move to the position
+                enchant.Sprite.call(this, 32, 50);
+                this.image = game.assets['question.jpg']; // set image
                 this.frame = 15; // set image data
                 game.rootScene.addChild(this); // add to canvas
                 if (true) {
-                    if (bear.x < 500)
-                        this.tl.moveBy(1100, 0, 50);
-                    else
-                    {
-                        this.tl.moveBy(50, 0, 10);
-                        this.tl.moveBy(-1200, 0, 10);
-                    }
+                    this.moveTo(bear.x + 50, bear.y + 8); // move to the position
+                    this.tl.moveBy(1100, 0, 50);
                 }
                 this.addEventListener('enterframe', function() {
-                    if (this.x > 1000 || this.x < 1){
+                    if (this.x > 1100 || this.x < 1) {
                         game.rootScene.removeChild(this);
-                }
+                    }
                 })
             }
         });
@@ -167,7 +169,7 @@ window.onload = function() {
                 this.speed = 5;
                 this.addEventListener('enterframe', function() {
                     this.x -= this.speed;
-                    this.tl.moveBy(0, 300, 50).moveBy(0, -300, 50); 
+                    this.tl.moveBy(0, 300, 50).moveBy(0, -300, 50);
                     if (this.x < 0) {
                         game.rootScene.removeChild(this);
                         game.end();
@@ -177,14 +179,48 @@ window.onload = function() {
             }
         });
 
-        var bear = new Bear();
-        game.rootScene.tl.then(function(){
-            var enemy = new Enemy();
-        }).delay(30).loop();
-        game.rootScene.tl.then(function(){
-            var enemy2 = new Enemy2();
-        }).delay(30).loop();
+        var Rock = enchant.Class.create(enchant.Sprite, {
+            initialize: function() {
+                enchant.Sprite.call(this, 16, 16);
+                this.image = game.assets["enchant.js-builds-0.8.3-b/images/icon1.png"];
+                this.frame = 2;
+                this.y = 0;
+                this.x = rand(1000);
+                this.speed = 10 - rand(9);
+                this.addEventListener('enterframe', function() {
+                    this.y += this.speed;
+                    if (this.x < 0) {
+                        game.rootScene.removeChild(this);
+                    }
+                })
+                game.rootScene.addChild(this); // canvas
+            }
+        });
 
+        var Weapon = enchant.Class.create(enchant.Sprite, {
+            initialize: function() {
+                enchant.Sprite.call(this, 16, 16);
+                this.image = game.assets["enchant.js-builds-0.8.3-b/images/icon1.png"];
+                this.frame = 5;
+                this.y = 0;
+                this.x = rand(1000);
+                this.speed = 5 - rand(4);
+                this.addEventListener('enterframe', function() {
+                    this.y += this.speed;
+                    if (this.x < 0) {
+                        game.rootScene.removeChild(this);
+                    }
+                })
+                game.rootScene.addChild(this); // canvas
+            }
+        });
+
+        var bear = new Bear();
+        setInterval(function(){var enemy = new Enemy();}, 2000);
+        setInterval(function(){var enemy2 = new Enemy2();}, 5000);
+        setInterval(function(){var rock = new Rock();}, 5000);
+        setInterval(function(){var weapon = new Weapon();}, 10000);
+         
         game.rootScene.on('touchstart', function(evt) {
             if (bullet > 0) {
                 bullet -= 1;
@@ -196,8 +232,13 @@ window.onload = function() {
         game.rootScene.on('enterframe', function() {
             var hits = Apple.intersect(Enemy);
             for (var i = 0, len = hits.length; i < len; i++) {
-                game.rootScene.removeChild(hits[i][0]);
-                game.rootScene.removeChild(hits[i][1]);
+                if (weaponBool == false){
+                    game.rootScene.removeChild(hits[i][0]);
+                    game.rootScene.removeChild(hits[i][1]);
+                }
+                else{
+                    game.rootScene.removeChild(hits[i][1]);
+                }
                 game.score++;
                 scoreLabel.text = "Score : " + game.score;
             }
@@ -209,10 +250,33 @@ window.onload = function() {
             }
             var hits3 = Apple.intersect(Enemy2);
             for (var i = 0, len = hits3.length; i < len; i++) {
-                game.rootScene.removeChild(hits3[i][0]);
-                game.rootScene.removeChild(hits3[i][1]);
+               if (weaponBool == false){
+                    game.rootScene.removeChild(hits3[i][0]);
+                    game.rootScene.removeChild(hits3[i][1]);
+                }
+                else{
+                    game.rootScene.removeChild(hits3[i][1]);
+                }
                 game.score++;
                 scoreLabel.text = "Score : " + game.score;
+            }
+            var hits4 = Bear.intersect(Enemy2);
+            for (var i = 0, len = hits4.length; i < len; i++) {
+                game.rootScene.removeChild(hits4[i][0]);
+                game.rootScene.removeChild(hits4[i][1]);
+                game.end();
+            }
+            var hits5 = Bear.intersect(Rock);
+            for (var i = 0, len = hits5.length; i < len; i++) {
+                game.rootScene.removeChild(hits5[i][0]);
+                game.rootScene.removeChild(hits5[i][1]);
+                game.end();
+            }
+            var hits6 = Bear.intersect(Weapon);
+            for (var i = 0, len = hits6.length; i < len; i++) {
+                game.rootScene.removeChild(hits6[i][1]);
+                weaponBool = true;
+                setTimeout(function(){weaponBool = false;}, 5000);
             }
         });
     };
